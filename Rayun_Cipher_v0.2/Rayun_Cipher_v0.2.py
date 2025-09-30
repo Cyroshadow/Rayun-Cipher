@@ -31,16 +31,21 @@ class plainText:
 
     def encrypt(self):
 
-        for i in self.data:
-            pass
+        yunKey = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=100)) #Using master key as seed, generate rayKey
+        print(yunKey)
+        ciphText = '' # Initialize ciphertext variable
+        random.seed(yunKey) # Set yunkey
 
+        for i in range(len(self.data)):
+            rowId = self.table[0].index(yunKey[i % len(yunKey)]) # Get row index 
+            columnId = self.table[0].index(self.data[i]) # Get column index
+            ciphText += self.table[rowId][columnId] # Add the correct character to the ciphertext string
+
+        random.seed(self.key)
+        self.data = ciphText
         return ciphText
 
-
-
-if __name__ == "__main__":
-
-    def get_Elements(upCharQuery = True, lowCharQuery = True, symQuery = True, whispaQuery = True, numQuery = True):
+def get_Elements(upCharQuery = True, lowCharQuery = True, symQuery = True, whispaQuery = True, numQuery = True):
         cipherElements = []
         alphUp = list(string.ascii_uppercase)
         alphLow = list(string.ascii_lowercase)
@@ -61,22 +66,25 @@ if __name__ == "__main__":
 
         return cipherElements
 
-    def get_Table(elements):
-        table = []
-        row = []
-        row.extend(elements)
+def get_Table(elements):
+    table = []
+    row = []
+    row.extend(elements)
 
-        for i in range(len(elements)):
-            table.append(row.copy())
-            row.extend(row[0])
-            row.pop(0)
+    for i in range(len(elements)):
+        table.append(row.copy())
+        row.extend(row[0])
+        row.pop(0)
 
-        return table
+    return table
+
+if __name__ == "__main__":
 
     table = get_Table(get_Elements(True, True, True, False, True))
     text = plainText("hello", table, "123")
 
     text.getRayTable()
     print(text.table)
+    text.encrypt()
+    print(text.data)
     input()
-
