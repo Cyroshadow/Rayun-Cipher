@@ -2,13 +2,18 @@ import string
 import os
 import random
 
-class plainText:
+class data:
 
-    def __init__(self, data, table, key): #Create object properties 
+    def __init__(self, data, table, key, yunKey = ""): #Create object properties 
         self.data = data
         self.table = table
         self.key = key
+        self.yunKey = yunKey
         random.seed(self.key)
+
+        keyElements = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=100)) #Using master key as seed, generate rayKey
+        self.yunKey = list(keyElements)
+        random.shuffle(self.yunKey)
 
     def getRayTable(self):
 
@@ -30,20 +35,26 @@ class plainText:
         return rayTable
 
     def encrypt(self):
-
-        yunKey = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=100)) #Using master key as seed, generate rayKey
-        print(yunKey)
         ciphText = '' # Initialize ciphertext variable
-        random.seed(yunKey) # Set yunkey
 
         for i in range(len(self.data)):
-            rowId = self.table[0].index(yunKey[i % len(yunKey)]) # Get row index 
+            rowId = self.table[0].index(self.yunKey[i % len(self.yunKey)]) # Get row index 
             columnId = self.table[0].index(self.data[i]) # Get column index
             ciphText += self.table[rowId][columnId] # Add the correct character to the ciphertext string
 
-        random.seed(self.key)
         self.data = ciphText
         return ciphText
+    
+    def decrypt(self):
+        plainText = '' # Initialize ciphertext variable
+
+        for i in range(len(self.data)):
+            rowId = self.table[0].index(self.yunKey[i % len(self.yunKey)]) # Get row index 
+            columnId = self.table[rowId].index(self.data[i]) # Get column index
+            plainText += self.table[0][columnId]
+
+        self.data = plainText
+        return plainText
 
 def get_Elements(upCharQuery = True, lowCharQuery = True, symQuery = True, whispaQuery = True, numQuery = True):
         cipherElements = []
@@ -80,11 +91,11 @@ def get_Table(elements):
 
 if __name__ == "__main__":
 
-    table = get_Table(get_Elements(True, True, True, False, True))
-    text = plainText("hello", table, "123")
+    table = get_Table(get_Elements(True, True, True, True, True))
+    text = data("", table, "g00d_P@ssw0rD")
 
     text.getRayTable()
-    print(text.table)
     text.encrypt()
     print(text.data)
-    input()
+    text.decrypt()
+    print(text.data)
