@@ -1,5 +1,4 @@
 import string
-import os
 import random
 
 class data:
@@ -11,13 +10,17 @@ class data:
         self.yunKey = yunKey
         random.seed(self.key)
 
-        keyElements = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=100)) #Using master key as seed, generate rayKey
+        keyElements = ''.join(random.choices(string.ascii_letters 
+                                             + string.digits + 
+                                             string.punctuation, k=100)) #Using master key as seed, generate rayKey
         self.yunKey = list(keyElements)
         random.shuffle(self.yunKey)
 
     def getRayTable(self):
 
-        rayKey = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=100)) #Using master key as seed, generate rayKey
+        rayKey = ''.join(random.choices(string.ascii_letters
+                                        + string.digits
+                                        + string.punctuation, k=100)) #Using master key as seed, generate rayKey
         random.seed(rayKey) #Set rayKey as seed
         random.shuffle(self.table[0]) #Shuffle element of table
         
